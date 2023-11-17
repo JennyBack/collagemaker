@@ -1,6 +1,4 @@
-
-import GridOne from './components/GridOne.tsx';
-// import ImagesArray from "./imagesArray.tsx";
+import CollageMaker from './components/CollageMaker';
 import image1 from './assets/images/pexels-carsten-kohler-13063592.jpg';
 import image2 from './assets/images/pexels-joana-hahn-18820159.jpg';
 import image3 from './assets/images/pexels-ozan-çulha-17843612.jpg';
@@ -16,7 +14,7 @@ export const imagesArray = [
 function App() {
   return (
       <div style={{display:'flex', justifyContent:'center',alignItems:'center',height:'100%'}}>
-        <GridOne images={imagesArray}/>
+        <CollageMaker images={imagesArray}/>
       </div>
   );
 }
