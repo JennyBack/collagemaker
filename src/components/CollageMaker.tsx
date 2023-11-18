@@ -4,6 +4,7 @@ import EditPanel from "./EditPanel";
 import ImageGrid from "./ImageGrid";
 import ButtonsPanel from "./ButtonsPanel";
 import AddImagesDialog from "./addImagesDialog/AddImagesDialog";
+import useCreateGridColumnStyle from '../hooks/useCreateGridColumnStyle';
 
 type GridOneProps = {
     images:any;
@@ -14,11 +15,13 @@ const CollageMaker = ({images}:GridOneProps) => {
     const [showEditMode,setShowEditMode] = React.useState<boolean>(false);
     const [showAddImagesDialog,setShowAddImagesDialog] = React.useState<boolean>(false);
     
+    const {gridColumnStyle, handleStyleOne,handleStyleTwo,handleStyleThree,handleReset} = useCreateGridColumnStyle();
+    
     return(
-        <Grid container xs={8} md={6} lg={4} sx={{overflow:'hidden'}} flexDirection={'column'}>
-           <ImageGrid images={images}/>
+        <Grid container xs={8} md={6} lg={4} flexDirection={'column'} sx={{height:'85%', flexWrap:'noWrap'}}>
+           <ImageGrid images={images} gridColumnStyle={gridColumnStyle}/>
            <ButtonsPanel showEditMode={showEditMode} setShowEditMode={setShowEditMode} showAddImagesDialog={showAddImagesDialog} setShowAddImagesDialog={setShowAddImagesDialog}/>
-            {showEditMode ? <EditPanel/> : null}
+            {showEditMode ? <EditPanel handleStyleOne={handleStyleOne} handleStyleTwo={handleStyleTwo} handleStyleThree={handleStyleThree} handleReset={handleReset}/> : null}
             {showAddImagesDialog ? <AddImagesDialog open={showAddImagesDialog} handleClose={() => setShowAddImagesDialog(false)}/>:null}
         </Grid>
         );
