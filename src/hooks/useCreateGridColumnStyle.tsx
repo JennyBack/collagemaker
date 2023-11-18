@@ -22,8 +22,10 @@ const getDefaultGridStyle = () => {
     return defaultGridColumnStyle;
 }
 
+//TODO function that creates random grids based on portrait, landscape and total number of images. -> one button to generate new grid
 
-const useCreateGridColumnStyle = () => {
+
+const useCreateGridColumnStyle = (numberOfPortraitImages,numberOfLandscapeImages,numberOfImages)=> {
     const [gridColumnStyle,setGridColumnStyle] = React.useState<GridColumnStyle>(getDefaultGridStyle());
     const [resetToDefaultStyle,setResetToDefaultStyle] = React.useState<boolean>(false);
     
@@ -37,11 +39,31 @@ const useCreateGridColumnStyle = () => {
         setResetToDefaultStyle(() => true);
     }
     const handleStyleOne = () => {
-        let newGridColumnStyle:GridColumnStyle = {
-            columnOne:{xs:12},columnTwo:{xs:4},columnThree:{xs:4},columnFour:{xs:4}
+        let newGridColumnStyle:GridColumnStyle;
+        if(numberOfImages === 4){
+            if(numberOfPortraitImages === 3){
+                newGridColumnStyle = {
+                    columnOne:{xs:12},columnTwo:{xs:4},columnThree:{xs:4},columnFour:{xs:4}
+                }   
+            }
+            if(numberOfPortraitImages === 2){
+                newGridColumnStyle = {
+                    columnOne:{xs:8},columnTwo:{xs:4},columnThree:{xs:4},columnFour:{xs:8}
+                }
+            }
+            if(numberOfPortraitImages === 1){
+                newGridColumnStyle = {
+                    columnOne:{xs:6},columnTwo:{xs:6},columnThree:{xs:8},columnFour:{xs:4}
+                }
+            }
+            if(numberOfPortraitImages  < 1){
+                newGridColumnStyle = {
+                    columnOne:{xs:6},columnTwo:{xs:6},columnThree:{xs:6},columnFour:{xs:6}
+                }
+            }
         }
        setGridColumnStyle((prevState) => newGridColumnStyle);
-        setResetToDefaultStyle(false);
+       setResetToDefaultStyle(false);
     }
     const handleStyleTwo = () => {
         let newGridColumnStyle:GridColumnStyle = {
@@ -60,7 +82,7 @@ const useCreateGridColumnStyle = () => {
     
     return {
         gridColumnStyle, handleStyleOne,handleStyleTwo,handleStyleThree,handleReset
-    }
+    } as const
 }
 
 export default useCreateGridColumnStyle;
