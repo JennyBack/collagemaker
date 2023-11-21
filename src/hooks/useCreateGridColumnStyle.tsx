@@ -22,10 +22,7 @@ const getDefaultGridStyle = () => {
     return defaultGridColumnStyle;
 }
 
-//TODO function that creates random grids based on portrait, landscape and total number of images. -> one button to generate new grid
-
-
-const useCreateGridColumnStyle = (numberOfPortraitImages,numberOfLandscapeImages,numberOfImages)=> {
+const useCreateGridColumnStyle = (numberOfPortraitImages,numberOfLandscapeImages,imagesArray)=> {
     const [gridColumnStyle,setGridColumnStyle] = React.useState<GridColumnStyle>(getDefaultGridStyle());
     const [resetToDefaultStyle,setResetToDefaultStyle] = React.useState<boolean>(false);
     
@@ -40,7 +37,7 @@ const useCreateGridColumnStyle = (numberOfPortraitImages,numberOfLandscapeImages
     }
     const handleStyleOne = () => {
         let newGridColumnStyle:GridColumnStyle;
-        if(numberOfImages === 4){
+        if(imagesArray.length === 4){
             if(numberOfPortraitImages === 3){
                 newGridColumnStyle = {
                     columnOne:{xs:12},columnTwo:{xs:4},columnThree:{xs:4},columnFour:{xs:4}
