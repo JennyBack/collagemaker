@@ -13,9 +13,7 @@ export const imagesArray = [
 
 function App() {
   return (
-      <div style={{display:'flex', justifyContent:'center',alignItems:'center',height:'100%'}}>
         <CollageMaker images={imagesArray}/>
-      </div>
   );
 }
 

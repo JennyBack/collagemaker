@@ -6,64 +6,108 @@ import ButtonsPanel from "./ButtonsPanel";
 import AddImagesDialog from "./addImagesDialog/AddImagesDialog";
 import useCreateGridColumnStyle from '../hooks/useCreateGridColumnStyle';
 import useCheckImageDirection from "../hooks/useCheckImageDirection";
+import {toJpeg} from "html-to-image";
+import {IconButton} from "@mui/material";
+import DownloadIcon from '@mui/icons-material/Download';
 
-type Image = {
-id:number;
-src:string;
-height:number;
-width:number;
+export type Image = {
+    id: number;
+    src: string;
+    height: number;
+    width: number;
 }
 
 type GridOneProps = {
-    images:string[];
+    images: string[];
 };
 
-const CollageMaker = ({images}:GridOneProps) => {
-    
-    const [showEditMode,setShowEditMode] = React.useState<boolean>(false);
-    const [showAddImagesDialog,setShowAddImagesDialog] = React.useState<boolean>(false);
+const CollageMaker = ({images}: GridOneProps) => {
+
+    const [showEditMode, setShowEditMode] = React.useState<boolean>(false);
+    const [showAddImagesDialog, setShowAddImagesDialog] = React.useState<boolean>(false);
     const [imagesArray, setImagesArray] = React.useState<Image[]>([]);
 
-    let {numberOfPortraitImages,numberOfLandscapeImages} = useCheckImageDirection(imagesArray);
-    
-    const {gridColumnStyle, handleStyleOne,handleStyleTwo,handleStyleThree,handleReset} = useCreateGridColumnStyle(numberOfPortraitImages,numberOfLandscapeImages,imagesArray);
-    
-    const handleUpdateImages = (newArray) => {
+    let {numberOfPortraitImages, numberOfLandscapeImages} = useCheckImageDirection(imagesArray);
+
+    const {
+        gridColumnStyle,
+        handleStyleOne,
+        handleStyleTwo,
+        handleStyleThree,
+        handleReset
+    } = useCreateGridColumnStyle(numberOfPortraitImages, numberOfLandscapeImages, imagesArray);
+
+    const handleUpdateImages = (newArray:Image[]) => {
         setImagesArray([...newArray]);
     }
+
+    let imageGridRef:React.MutableRefObject<HTMLElement | undefined> = React.useRef();
+
+    const htmlToImageConvert = () => {
+        if(imageGridRef.current) {
+            toJpeg(imageGridRef.current, {quality: 0.95})
+                .then(function (dataUrl) {
+                    let link = document.createElement('a');
+                    link.download = 'collage-maker-img.jpeg';
+                    link.href = dataUrl;
+                    link.click();
+                });
+        }
+    };
     
     React.useEffect(() => {
-        if(images.length > 0 && imagesArray.length < 1) {
+        if (images.length > 0 && imagesArray.length < 1) {
             images.map((image, index) => {
                 const img = new Image();
                 img.src = image;
-                    img.onload = () => 
-                        setImagesArray((prev) => prev.concat([{id:index,src:image,height:img.height,width:img.width}]))
+                img.onload = () =>
+                    setImagesArray((prev) => prev.concat([{
+                        id: index,
+                        src: image,
+                        height: img.height,
+                        width: img.width
+                    }]))
             });
-           
+
         }
-        },[]);
-    
-    return(
-        <Grid container xs={8} md={6} lg={4} flexDirection={'column'} sx={{height:'85%', flexWrap:'noWrap'}}>
-           <ImageGrid showEditMode={showEditMode} images={imagesArray} gridColumnStyle={gridColumnStyle} handleUpdateImages={handleUpdateImages}/>
-           <ButtonsPanel 
-               showEditMode={showEditMode} 
-               setShowEditMode={setShowEditMode} 
-               showAddImagesDialog={showAddImagesDialog} 
-               setShowAddImagesDialog={setShowAddImagesDialog}
-           />
-           {showEditMode ? 
-                <EditPanel 
-                    handleStyleOne={handleStyleOne} 
-                    handleStyleTwo={handleStyleTwo} 
-                    handleStyleThree={handleStyleThree} 
+    }, []);
+
+    return (
+        <Grid container xs={8} md={6} lg={4} 
+              sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flexDirection:'column',
+                  height: '100%'
+              }}>
+            <ImageGrid 
+                ref={imageGridRef} 
+                showEditMode={showEditMode} 
+                images={imagesArray}
+                gridColumnStyle={gridColumnStyle} 
+                handleUpdateImages={handleUpdateImages}
+            />
+            <ButtonsPanel
+                showEditMode={showEditMode}
+                setShowEditMode={setShowEditMode}
+                showAddImagesDialog={showAddImagesDialog}
+                setShowAddImagesDialog={setShowAddImagesDialog}
+            />
+            <IconButton onClick={htmlToImageConvert}><DownloadIcon/></IconButton>
+            {showEditMode ?
+                <EditPanel
+                    handleStyleOne={handleStyleOne}
+                    handleStyleTwo={handleStyleTwo}
+                    handleStyleThree={handleStyleThree}
                     handleReset={handleReset}
-                /> 
-           : null}
-            {showAddImagesDialog ? <AddImagesDialog open={showAddImagesDialog} handleClose={() => setShowAddImagesDialog(false)}/>:null}
+                />
+                : null}
+            {showAddImagesDialog ?
+                <AddImagesDialog open={showAddImagesDialog} handleClose={() => setShowAddImagesDialog(false)}/> : null}
         </Grid>
-        );
+
+    );
 }
 
 export default CollageMaker;
