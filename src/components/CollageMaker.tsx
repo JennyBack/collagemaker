@@ -21,10 +21,10 @@ type GridOneProps = {
 
 const CollageMaker = ({images}: GridOneProps) => {
     
-    let defaultNoDisplayedImgs = 4;
+    let defaultNoDisplayedImg = 4;
     
     const [displayedImages, setDisplayedImages] = React.useState<Image[]>([]);
-    const [noDisplayedImages,setNoDisplayedImages] = React.useState<number>(defaultNoDisplayedImgs);
+    const [noDisplayedImages,setNoDisplayedImages] = React.useState<number>(defaultNoDisplayedImg);
     const [allImages,setAllImages] = React.useState<Image[]>([]);
 
     let {numberOfPortraitImages, numberOfLandscapeImages} = useCheckImageDirection(displayedImages);
@@ -63,7 +63,7 @@ const CollageMaker = ({images}: GridOneProps) => {
     
     React.useEffect(() => {
         if(allImages.length > 0 && displayedImages.length < 1){
-            for(let i = 0; i <= defaultNoDisplayedImgs -1 ; i++){
+            for(let i = 0; i < defaultNoDisplayedImg - 1; i++){
                             setDisplayedImages((prev) => prev.concat([{
                                 id: allImages[i].id,
                                 src: allImages[i].src,
@@ -78,7 +78,7 @@ const CollageMaker = ({images}: GridOneProps) => {
         setNoDisplayedImages(displayedImages.length);
     },[displayedImages])
 
-    const handleUpdateImages = (newArray) => {
+    const handleUpdateImages = (newArray:Image[]) => {
         setDisplayedImages([...newArray]);
     }
 
