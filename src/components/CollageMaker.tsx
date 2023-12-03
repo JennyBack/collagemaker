@@ -7,8 +7,6 @@ import AddImagesDialog from "./addImagesDialog/AddImagesDialog";
 import useCreateGridColumnStyle from '../hooks/useCreateGridColumnStyle';
 import useCheckImageDirection from "../hooks/useCheckImageDirection";
 import {toJpeg} from "html-to-image";
-import {IconButton} from "@mui/material";
-import DownloadIcon from '@mui/icons-material/Download';
 
 export type Image = {
     id: number;
@@ -78,9 +76,10 @@ const CollageMaker = ({images}: GridOneProps) => {
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  flexDirection:'column',
-                  height: '100%'
-              }}>
+                  width:'100%',
+                  margin:'auto'
+              }}
+              >
             <ImageGrid 
                 ref={imageGridRef} 
                 showEditMode={showEditMode} 
@@ -93,8 +92,8 @@ const CollageMaker = ({images}: GridOneProps) => {
                 setShowEditMode={setShowEditMode}
                 showAddImagesDialog={showAddImagesDialog}
                 setShowAddImagesDialog={setShowAddImagesDialog}
+                onDownload={htmlToImageConvert}
             />
-            <IconButton onClick={htmlToImageConvert}><DownloadIcon/></IconButton>
             {showEditMode ?
                 <EditPanel
                     handleStyleOne={handleStyleOne}

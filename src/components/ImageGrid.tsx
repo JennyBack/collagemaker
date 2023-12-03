@@ -50,7 +50,7 @@ const ImageGrid = React.forwardRef(function ({
         handleUpdateImages(newArray);
     }
 
-    return <Grid container
+    return <Grid container ref={ref}
                  spacing={1}
                  aria-label={'image-collage'}
                  sx={{
