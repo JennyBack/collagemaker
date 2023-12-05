@@ -22,7 +22,7 @@ const getDefaultGridStyle = () => {
     return defaultGridColumnStyle;
 }
 
-const useCreateGridColumnStyle = (numberOfPortraitImages,numberOfLandscapeImages,imagesArray)=> {
+const useCreateGridColumnStyle = (numberOfPortraitImages,numberOfLandscapeImages,noDisplayedImages)=> {
     const [gridColumnStyle,setGridColumnStyle] = React.useState<GridColumnStyle>(getDefaultGridStyle());
     const [resetToDefaultStyle,setResetToDefaultStyle] = React.useState<boolean>(false);
     
@@ -37,7 +37,7 @@ const useCreateGridColumnStyle = (numberOfPortraitImages,numberOfLandscapeImages
     }
     const handleStyleOne = () => {
         let newGridColumnStyle:GridColumnStyle;
-        if(imagesArray.length === 4){
+        if(noDisplayedImages.length === 4){
             if(numberOfPortraitImages === 3){
                 newGridColumnStyle = {
                     columnOne:{xs:12},columnTwo:{xs:4},columnThree:{xs:4},columnFour:{xs:4}
