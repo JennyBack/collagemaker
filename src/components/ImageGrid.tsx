@@ -1,18 +1,19 @@
 import * as React from 'react';
-import Grid from "@mui/material/Unstable_Grid2";
-import {GridColumnStyle} from "../hooks/useCreateGridColumnStyle";
-import {Button, Skeleton} from "@mui/material";
-import {Image} from "./CollageMaker";
+import Grid from '@mui/material/Unstable_Grid2';
+import { GridColumnStyle } from '../hooks/useCreateGridColumnStyle';
+import { Skeleton } from '@mui/material';
+import { Image } from './CollageMaker';
+import { Box } from '@mui/material';
 
 type ImageGridProps = {
     images: Image[];
     gridColumnStyle: GridColumnStyle;
-    handleUpdateImages: (newArray: []) => void;
+    handleUpdateImages: (newArray: Image[]) => void;
     showEditMode: boolean;
-    onRemoveImage:(image:Image) => void;
+    onRemoveImage: (image: Image) => void;
 };
 
-const swapElements = (arr, pos1, pos2) => {
+const swapElements = (arr: Image[], pos1: number, pos2: number) => {
     const temp = arr[pos1];
     arr[pos1] = arr[pos2];
     arr[pos2] = temp;
@@ -20,54 +21,77 @@ const swapElements = (arr, pos1, pos2) => {
     return arr;
 };
 
-const ImageGrid = ({images, gridColumnStyle, handleUpdateImages, showEditMode, onRemoveImage}: ImageGridProps) => {
-    let {columnOne, columnTwo, columnThree, columnFour} = gridColumnStyle;
-    let stylesArray = [columnOne, columnTwo, columnThree, columnFour];
+const ImageGrid = React.forwardRef(function (
+    { images, gridColumnStyle, handleUpdateImages, showEditMode }: ImageGridProps,
+    ref
+) {
+    let { columnOne, columnTwo, columnThree, columnFour } = gridColumnStyle;
+    let stylesArray = [4, 8, 6, 6];
 
-    const handleDragStart = (e) => {
-        e.dataTransfer.clearData('text');
-        e.dataTransfer.setData('text', e.currentTarget.id);
-        e.dataTransfer.effectAllowed = 'move';
-    }
+    const handleDragStart = (event: React.DragEvent<HTMLElement>) => {
+        event.dataTransfer.clearData('text');
+        event.dataTransfer.setData('text', event.currentTarget.id);
+        event.dataTransfer.effectAllowed = 'move';
+    };
 
-    const handleDragOver = (ev) => {
-        ev.preventDefault();
-        ev.stopPropagation();
-    }
+    const handleDragOver = (event: React.DragEvent<HTMLElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+    };
 
-    const handleDrop = (ev) => {
-        ev.preventDefault();
-        ev.dataTransfer.dropEffect = 'move';
-        let drop = ev.dataTransfer.getData('text');
-        let droppedImgIndex = images.indexOf(images.find((img) => img.id === drop));
-        let dropTo = ev.currentTarget.id;
-        let droppedToImgIndex = images.indexOf(images.find((img) => img.id === dropTo));
+    const handleDrop = (event: React.DragEvent<HTMLElement>) => {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'move';
+        let drop: string = event.dataTransfer.getData('text');
+        let droppedImgIndex: number = images.indexOf(images.find((img) => img.id === drop));
+        let dropTo: string = event.currentTarget.id;
+        let droppedToImgIndex: number = images.indexOf(images.find((img) => img.id === dropTo));
 
-        let newArray = swapElements(images, droppedImgIndex, droppedToImgIndex);
+        let newArray: Image[] = swapElements(images, droppedImgIndex, droppedToImgIndex);
         handleUpdateImages(newArray);
-    }
+    };
 
-    return <Grid container spacing={1} aria-label={'image-collage'}
-                 sx={{height: '60vw', overflow: 'hidden'}}>{images.length > 0 ? images.map((image, index) => {
-                return index <= images.length ? 
-                    <Grid 
-                        key={image.id}
-                        xs={4}
-                        // xs={stylesArray[index].xs}
-                    >
-                    <img key={image.id}
-                         id={image.id}
-                         draggable={showEditMode}
-                         onDragStart={handleDragStart}
-                         onDragOver={handleDragOver}
-                         onDrop={handleDrop}
-                         style={{width: '100%', height: '100%', objectFit: 'cover'}}
-                         src={image.src} alt={'start image'}/>
-                        <Button onClick={() => onRemoveImage(image)}>Remove</Button>
-                </Grid> : null
-            }
-        )
-        : <Skeleton variant="rectangular" height={'100%'}/>}
-    </Grid>
-}
+    return (
+        <Grid container spacing={1} aria-label={'image-collage'}>
+            <Box
+                ref={ref}
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignContent: 'center',
+                    margin: 'auto',
+                    padding: '4px',
+                    width: '100%',
+                    height: '100%',
+                    flexWrap: 'wrap',
+                    backgroundColor: 'white'
+                }}
+            >
+                {images.length &&
+                    images.map((image, index) => {
+                        return (
+                            <Grid key={image.id} md={stylesArray[index]}>
+                                <img
+                                    key={image.id}
+                                    id={image.id}
+                                    draggable={showEditMode}
+                                    onDragStart={handleDragStart}
+                                    onDragOver={handleDragOver}
+                                    onDrop={handleDrop}
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'cover'
+                                    }}
+                                    src={image.src}
+                                    alt={'start image'}
+                                />
+                            </Grid>
+                        );
+                    })}
+            </Box>
+        </Grid>
+    );
+});
+
 export default ImageGrid;

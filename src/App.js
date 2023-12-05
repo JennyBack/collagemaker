@@ -7,22 +7,10 @@ import image5 from './assets/images/pexels-anete-lusina-6331086.jpg';
 import image6 from './assets/images/pexels-brenoanp-1136571.jpg';
 import image7 from './assets/images/pexels-constantin-1008180.jpg';
 
-export const imagesArray = [
-    image1,
-    image2,
-    image3,
-    image4,
-    image5,
-    image6,
-    image7
-];
+export const imagesArray = [image1, image2, image3, image4, image5, image6, image7];
 
 function App() {
-  return (
-      <div style={{display:'flex', justifyContent:'center',alignItems:'center',height:'100%'}}>
-        <CollageMaker images={imagesArray}/>
-      </div>
-  );
+    return <CollageMaker images={imagesArray.length > 0 ? imagesArray : []} />;
 }
 
 export default App;
